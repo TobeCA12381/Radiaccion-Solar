@@ -1,39 +1,17 @@
-const http = require('http');
-const fs = require('fs');
-const ejs = require('ejs');
+const express= require("express")
+
+const app = express()
+
 const path = require('path');
 
-const hostname = '34.134.26.143';
-const port = 8093;
+app.set("view engine","ejs")
+app.use(express.static(path.join(__dirname, 'public')));
+app.get("/",(req,res)=>{
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    const filePath = path.join(__dirname, 'index.ejs');
-    
-    fs.readFile(filePath, 'utf8', (err, content) => {
-      if (err) {
-        res.writeHead(500);
-        res.end('Error interno del servidor');
-        return;
-      }
+    res.render("index")
+})
 
-      ejs.renderFile(filePath, {}, {}, (err, str) => {
-        if (err) {
-          res.writeHead(500);
-          res.end('Error al renderizar EJS');
-          return;
-        }
+app.listen(3000,'34.134.26.143',(req,res)=> {
+    console.log("Corriendo  en el puerto 3000")
 
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(str);
-      });
-    });
-  } else {
-    res.writeHead(404);
-    res.end('Página no encontrada');
-  }
-});
-
-server.listen(port, hostname, () => {
-  console.log(`Servidor corriendo en http://${hostname}:${port}/`);
-});
+})
