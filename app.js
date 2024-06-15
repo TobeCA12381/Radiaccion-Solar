@@ -11,7 +11,7 @@ app.get("/",(req,res)=>{
     res.render("index")
 })
 
-app.listen(8093,'34.134.26.143',(req,res)=> {
-    console.log("Corriendo  en el puerto 3000")
+app.listen(8093,'0.0.0.0',(req,res)=> {
+    console.log("Corriendo  en el puerto 8093")
 
 })
