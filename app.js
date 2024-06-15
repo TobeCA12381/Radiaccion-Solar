@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const port = 8093;
+const hostname = '34.134.26.143';  // Tu hostname específico
+const port = 80;  // Puerto estándar HTTP
 
 // Configurar EJS como motor de vistas
 app.set('view engine', 'ejs');
@@ -19,6 +20,6 @@ app.get('/', (req, res) => {
 });
 
 // Iniciar el servidor
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en http://0.0.0.0:${port}/`);
+app.listen(port, hostname, () => {
+  console.log(`Servidor corriendo en http://${hostname}:${port}/`);
 });
