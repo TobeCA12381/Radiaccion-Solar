@@ -1,25 +1,39 @@
-const express = require('express');
+const http = require('http');
+const fs = require('fs');
+const ejs = require('ejs');
 const path = require('path');
 
-const app = express();
-const hostname = '34.134.26.143';  // Tu hostname específico
-const port = 80;  // Puerto estándar HTTP
+const hostname = '34.134.26.143';
+const port = 8093;
 
-// Configurar EJS como motor de vistas
-app.set('view engine', 'ejs');
+const server = http.createServer((req, res) => {
+  if (req.url === '/') {
+    const filePath = path.join(__dirname, 'index.ejs');
+    
+    fs.readFile(filePath, 'utf8', (err, content) => {
+      if (err) {
+        res.writeHead(500);
+        res.end('Error interno del servidor');
+        return;
+      }
 
-// Configurar el directorio de vistas
-app.set('views', path.join(__dirname, 'views'));
+      ejs.renderFile(filePath, {}, {}, (err, str) => {
+        if (err) {
+          res.writeHead(500);
+          res.end('Error al renderizar EJS');
+          return;
+        }
 
-// Servir archivos estáticos (CSS, JS, imágenes, etc.)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Ruta para la página principal
-app.get('/', (req, res) => {
-  res.render('index');
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(str);
+      });
+    });
+  } else {
+    res.writeHead(404);
+    res.end('Página no encontrada');
+  }
 });
 
-// Iniciar el servidor
-app.listen(port, hostname, () => {
+server.listen(port, hostname, () => {
   console.log(`Servidor corriendo en http://${hostname}:${port}/`);
 });
