@@ -1,0 +1,31 @@
+.graphic {
+  position: relative;
+  display: grid;
+  padding-top: 3rem;
+  grid-template-columns: 1fr 75%;
+  overflow: hidden;
+  z-index: 0;
+
+}
+
+.graphic-sun {
+  width: auto;
+  justify-self: end;
+  grid-column-start: 2;
+  animation: moveSun 1s linear forwards;
+}
+
+@keyframes moveSun {
+  0% {
+    transform: translateX(80%);
+  }
+ 
+  100% {
+    transform: translateX(10%);
+  }
+}
+@media screen and (max-width: 1024px) {
+  .graphic {
+    display: none; /* Oculta el contenedor gráfico en pantallas pequeñas */
+  }
+}
