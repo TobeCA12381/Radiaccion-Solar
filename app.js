@@ -1,32 +1,15 @@
-const http = require('node:http');
+const app = express()
 
-const hostname = '0.0.0.0';
-const port = 8093;
+const path = require('path');
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/json');
-  let arreglo = [{
-    nombre:"Juan",
-    apellido:"Perez"
-    },
-    {
-    nombre:"Betox",
-    apellido:"Alarcon"
-    },
-    {
-    nombre:"Anthony",
-    apellido:"Garcia"
-    }
-    ]
-    
-    res.write(JSON.stringify(arreglo));  
-    res.end('');
-    
-  });
+app.set("view engine","ejs")
+app.use(express.static(path.join(__dirname, 'public')));
+app.get("/",(req,res)=>{
 
+    res.render("index")
+})
 
+app.listen(8093,'0.0.0.0',(req,res)=> {
+    console.log("Corriendo  en el puerto 0893")
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-}); 
+})
