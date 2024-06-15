@@ -1,9 +1,7 @@
-const http = require('node:http');
 const express = require('express');
 const path = require('path');
 
 const app = express();
-const hostname = '34.134.26.143';
 const port = 8093;
 
 // Configurar EJS como motor de vistas
@@ -20,10 +18,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// Crear el servidor HTTP con la aplicación Express
-const server = http.createServer(app);
-
 // Iniciar el servidor
-server.listen(port, hostname, () => {
-  console.log(`Servidor corriendo en http://${hostname}:${port}/`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Servidor corriendo en http://0.0.0.0:${port}/`);
 });
