@@ -1,0 +1,98 @@
+import pandas as pd
+from sqlalchemy import create_engine
+import config
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+import matplotlib.pyplot as plt
+import joblib
+
+# Crear la conexión usando SQLAlchemy
+db_url = f"mysql+mysqldb://{config.DATABASE_USER}:{config.DATABASE_PASSWORD}@{config.DATABASE_HOST}/{config.DATABASE_NAME}"
+engine = create_engine(db_url)
+# Consultar los datos de la tabla registros
+query = """
+    SELECT fecha, hora, uv_intensity
+    FROM registros
+"""
+df = pd.read_sql(query, engine)
+
+# Convertir la columna 'fecha' a tipo datetime
+df['fecha'] = pd.to_datetime(df['fecha'])
+
+# Convertir la columna 'hora' a tipo timedelta
+df['hora'] = pd.to_timedelta(df['hora'])
+
+# Crear una columna de hora legible para concatenar con fecha
+df['hora_legible'] = df['hora'].astype(str).str.split().str[-1]
+
+# Crear la columna 'fechahora' combinando fecha y hora_legible
+df['fechahora'] = pd.to_datetime(df['fecha'].astype(str) + ' ' + df['hora_legible'])
+
+# Convertir fechahora a segundos desde una fecha base (por ejemplo, época UNIX)
+df['fechahora_seconds'] = (df['fechahora'] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s')
+
+# Agregar características adicionales
+df['hour'] = df['fechahora'].dt.hour
+df['minute'] = df['fechahora'].dt.minute
+df['second'] = df['fechahora'].dt.second
+df['month'] = df['fechahora'].dt.month
+df['dayofweek'] = df['fechahora'].dt.dayofweek
+df['dayofyear'] = df['fechahora'].dt.dayofyear
+df['day'] = df['fechahora'].dt.day
+
+# Seleccionar características y variable objetivo
+X = df[['fechahora_seconds', 'hour', 'minute', 'second', 'month', 'dayofweek', 'dayofyear', 'day']]
+y = df['uv_intensity'].values
+
+# Normalizar características
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Construir el modelo de red neuronal mejorado
+model = keras.Sequential([
+    keras.layers.Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
+    keras.layers.Dropout(0.3),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dropout(0.3),
+    keras.layers.Dense(1)
+])
+
+# Compilar el modelo con diferentes hiperparámetros
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+# Implementar early stopping para evitar el sobreajuste
+early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+
+# Entrenar el modelo
+history = model.fit(X_train, y_train, epochs=200, validation_split=0.2, verbose=1, callbacks=[early_stopping])
+
+# Evaluar el modelo en el conjunto de prueba
+y_pred_test = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred_test)
+r2 = r2_score(y_test, y_pred_test)
+
+print(f'\nError Cuadrático Medio (MSE): {mse}')
+print(f'Coeficiente de Determinación (R²): {r2}')
+
+# Visualizar los datos reales vs predicciones
+plt.figure(figsize=(12, 6))
+plt.plot(df['fechahora'], df['uv_intensity'], label='Datos Reales')
+plt.scatter(pd.to_datetime(X_test[:, 0] * scaler.scale_[0] + scaler.mean_[0], unit='s'), y_pred_test, color='red', label='Predicciones')
+plt.xlabel('Fecha y Hora')
+plt.ylabel('Intensidad UV')
+plt.title('Intensidad UV: Datos Reales vs Predicciones')
+plt.legend()
+plt.show()
+
+# Guardar el modelo y el escalador
+model.save('uv_intensity_model.keras')  # Guarda el modelo en formato nativo de Keras
+# Alternativamente, puedes usar 'uv_intensity_model.h5' para guardar en formato HDF5
+# model.save('uv_intensity_model.h5')
+joblib.dump(scaler, 'scaler.pkl')

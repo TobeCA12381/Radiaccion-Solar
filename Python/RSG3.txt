@@ -1,0 +1,75 @@
+import pandas as pd
+import mysql.connector
+import matplotlib.pyplot as plt
+# Conectar a la base de datos MySQL
+cnx = mysql.connector.connect(
+    host='192.168.1.107',
+    user='RSG3',
+    password='tu_contraseña',
+    database='arduinodata'
+)
+
+# Consultar los datos de la tabla registros
+query = """
+    SELECT fecha, hora, uv_intensity
+    FROM registros
+"""
+df = pd.read_sql(query, cnx)
+
+# Cerrar la conexión a la base de datos
+cnx.close()
+
+# Mostrar los primeros registros para verificar
+print(df.head())
+
+# Ver el resumen de los datos
+print(df.info())
+
+# Estadísticas descriptivas
+print(df.describe())
+
+# Revisión de valores únicos en cada columna
+print(df['fecha'].unique())
+print(df['hora'].unique())
+print(df['uv_intensity'].unique())
+
+# Comprobar valores nulos
+print(df.isnull().sum())
+
+# Eliminar duplicados
+df = df.drop_duplicates()
+
+# Rellenar o eliminar valores nulos
+df = df.dropna()  # Esto elimina filas con valores nulos
+
+# O puedes rellenar valores nulos, por ejemplo con la media
+# df['uv_intensity'].fillna(df['uv_intensity'].mean(), inplace=True)
+
+# Verificar rangos de fechas y horas
+print(df['fecha'].min(), df['fecha'].max())
+print(df['hora'].min(), df['hora'].max())
+
+# Verificar valores extremos en uv_intensity
+print(df['uv_intensity'].min(), df['uv_intensity'].max())
+
+
+# Histograma de uv_intensity
+plt.hist(df['uv_intensity'], bins=30)
+plt.xlabel('UV Intensity')
+plt.ylabel('Frequency')
+plt.title('Distribution of UV Intensity')
+plt.show()
+
+# Gráfico de líneas de uv_intensity a lo largo del tiempo
+df['fechahora'] = pd.to_datetime(df['fecha'].astype(str) + ' ' + df['hora'].astype(str))
+plt.plot(df['fechahora'], df['uv_intensity'])
+plt.xlabel('Datetime')
+plt.ylabel('UV Intensity')
+plt.title('UV Intensity over Time')
+plt.show()
+
+# Ejemplo: eliminar filas con uv_intensity fuera de un rango esperado
+df = df[(df['uv_intensity'] >= 0) & (df['uv_intensity'] <= 15)]
+
+# Verificar los cambios
+print(df.describe())

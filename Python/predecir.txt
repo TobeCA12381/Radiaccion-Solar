@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import joblib
+from datetime import datetime
+
+# Cargar el modelo y el escalador
+model = tf.keras.models.load_model('uv_intensity_model.h5')
+scaler = joblib.load('scaler.pkl')
+
+# Predicción para una fecha y hora específica
+fecha_hora_pred = pd.Timestamp('2024-06-26 17:44:09')
+fecha_hora_pred_seconds = (fecha_hora_pred - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s')
+hora_pred = fecha_hora_pred.hour
+minuto_pred = fecha_hora_pred.minute
+segundo_pred = fecha_hora_pred.second
+mes_pred = fecha_hora_pred.month
+dia_semana_pred = fecha_hora_pred.dayofweek
+
+# Crear un DataFrame para la predicción con nombres de características válidos
+X_pred = pd.DataFrame({
+    'fechahora_seconds': [fecha_hora_pred_seconds],
+    'hour': [hora_pred],
+    'minute': [minuto_pred],
+    'second': [segundo_pred],
+    'month': [mes_pred],
+    'dayofweek': [dia_semana_pred]
+})
+
+# Normalizar características de predicción
+X_pred_scaled = scaler.transform(X_pred)
+
+# Hacer la predicción
+y_pred = model.predict(X_pred_scaled)
+
+# Formatear la predicción a dos decimales
+uv_prediccion_formateada = f'{y_pred[0][0]:.2f}'
+
+print(f'Predicción de UV intensity para {fecha_hora_pred}: {uv_prediccion_formateada}')
