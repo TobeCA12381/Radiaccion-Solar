@@ -23,6 +23,25 @@
           con la energía solar para ofrecerte predicciones precisas de la radiación solar. Nuestro avanzado sistema de
           IA analiza datos en tiempo real para proporcionar información detallada y exacta sobre los niveles de
           radiación solar.</p>
+          <div class="countdown flex">
+            <div class="flex">
+              <div class="countdown-item flex">
+                <span id="hours" class="countdown-Number">00</span>
+                <span class="countdown-Letter">H</span>
+              </div>
+              <div class="countdown-item flex">
+                <span id="minutes" class="countdown-Number">00</span>
+                <span class="countdown-Letter">M</span>
+              </div>
+              <div class="countdown-item flex">
+                <span id="seconds" class="countdown-Number">00</span>
+                <span class="countdown-Letter">S</span>
+              </div>
+            </div>
+          </div>
+          <div class="container-clock">
+            <p id="date">date</p>
+          </div>
       </div>
       <div class="graphic">
         <img class="graphic-sun" src="img/sol.png">
@@ -40,8 +59,20 @@
         <div class="day">
             <h2><%= day %></h2>
             <% dayRecords.forEach(function(registro) { 
-            var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
-            var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
+                var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
+                var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
+              
+                var uvLevels = [
+                    { min: 1, max: 2, message: 'bajo' },
+                    { min: 3, max: 5, message: 'moderado' },
+                    { min: 6, max: 7, message: 'alto' },
+                    { min: 8, max: 10, message: 'muy alto' },
+                    { min: 11, max: Infinity, message: 'extremo' }
+                ];
+
+                
+                var uvMessage = uvLevels.find(level => registro.uv_intensity >= level.min && registro.uv_intensity <= level.max).message;
+
             %>
             <div class="countdown flex">
                 <div class="uv-container">
@@ -57,7 +88,7 @@
                         </div>
                     </div>
                     <div class="uv-footer">
-                        El índice ultravioleta previsto para hoy en Bayóvar bajo.
+                        El índice ultravioleta previsto para hoy en Bayóvar es <%= uvMessage %>.
                     </div>
                 </div>
             </div>
