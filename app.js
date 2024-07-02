@@ -12,10 +12,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuración de la conexión a la base de datos MySQL
 const connection = mysql.createConnection({
-    host: 'localhost',  // Cambia a la dirección de tu servidor MySQL si es diferente
-    user: 'root',       // Nombre de usuario de MySQL
-    password: '',       // Contraseña de MySQL (deja en blanco si no tienes configurada una contraseña)
-    database: 'arduinodata' // Nombre de tu base de datos
+    host: '34.151.233.27',  // Cambia a la dirección de tu servidor MySQL si es diferente
+    user: 'RSG3',       // Nombre de usuario de MySQL
+    password: 'tu_contraseña',       // Contraseña de MySQL (deja en blanco si no tienes configurada una contraseña)
+    database: 'Grupo3' // Nombre de tu base de datos
 });
 
 // Conectar a la base de datos MySQL
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 8093;
-app.listen(PORT, () => {
+app.listen(PORT,"0.0.0.0", () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
