@@ -1,16 +1,15 @@
 .weather {
-    width: 100%;
-    padding: 10px;
+    width:auto;
 }
 
 .forecast {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Espacio entre los cuadros */
+    gap: 20px; 
 }
 
 .day {
-    flex: 1 1 calc(33.333% - 20px); /* Tres cuadros por fila con un espacio de 20px */
+    flex: 1 1 calc(33.333% - 20px); 
     box-sizing: border-box;
     padding: 10px;
     border: 1px solid #ccc;
