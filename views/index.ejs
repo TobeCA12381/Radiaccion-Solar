@@ -23,18 +23,6 @@
           con la energía solar para ofrecerte predicciones precisas de la radiación solar. Nuestro avanzado sistema de
           IA analiza datos en tiempo real para proporcionar información detallada y exacta sobre los niveles de
           radiación solar.</p>
-          <!-- <table border="1">
-            <tbody>
-                <% registros.forEach(function(registro) { %>
-                    <tr>
-                        <td><%= registro.hora %></td>
-                        <td><%= registro.uv_intensity %></td>
-                        <td><%= registro.dia_semana %></td>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
-   -->
       </div>
       <div class="graphic">
         <img class="graphic-sun" src="img/sol.png">
@@ -43,34 +31,44 @@
   </section>
   <section class="weather">
     <div class="forecast">
+        <% 
+        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        daysOfWeek.forEach(day => {
+            const dayRecords = registros.filter(record => record.dia_semana === day);
+            if (dayRecords.length > 0) { 
+        %>
         <div class="day">
-          <% registros.forEach(function(registro) { 
+            <h2><%= day %></h2>
+            <% dayRecords.forEach(function(registro) { 
             var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
             var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
             %>
-          <div class="countdown flex">
-            <div class="uv-container">
-              <div class="uv-header">
-                  <span><%= registro.fecha %></span>
-                  <span><%= registro.dia_semana %></span>
-              </div>
-              <div id="uv-levels"><hr>
-                <!-- Los niveles se agregarán aquí dinámicamente -->
-                <div class="uv-level">
-                    <span><%= registro.hora %></span>
-                    <div class="bar <%= barClass %>" style="width: <%= barWidth %>%;"></div>
-                    <span class="bar-value"><%= registro.uv_intensity %></span>
-                </div>               
+            <div class="countdown flex">
+                <div class="uv-container">
+                    <div class="uv-header">
+                        <span><%= registro.fecha %></span>
+                        <span><%= registro.dia_semana %></span>
+                    </div>
+                    <div id="uv-levels">
+                        <div class="uv-level">
+                            <span><%= registro.hora %></span>
+                            <div class="bar <%= barClass %>" style="width: <%= barWidth %>%;"></div>
+                            <span class="bar-value"><%= registro.uv_intensity %></span>
+                        </div>
+                    </div>
+                    <div class="uv-footer">
+                        El índice ultravioleta previsto para hoy en Bayóvar bajo.
+                    </div>
+                </div>
             </div>
-              <div class="uv-footer">
-                  El índice ultravioleta previsto para hoy en Bayóvar es muy alto.
-              </div>
-            </div>
-          </div>
-          <% }); %>
+            <% }); %>
         </div>
+        <% 
+            }
+        });
+        %>
     </div>
-  </section>
+</section>
   <script src="clock.js"></script>
   <!-- <script src="grafico.js"></script> -->
 </body>

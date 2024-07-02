@@ -1,20 +1,24 @@
  // Datos de ejemplo
  const uvData = [
-    { time: '09:00', level: 10 },
-    { time: '10:00', level: 7 },
-    { time: '11:00', level: 6 },
-    { time: '12:00', level: 5 },
-    { time: '13:00', level: 4 },
-    { time: '14:00', level: 3 },
-    { time: '15:00', level: 2 },
-    { time: '16:00', level: 1 }
+    { time: '09:00', level: 10, day: 'Monday' },
+    { time: '10:00', level: 7, day: 'Monday' },
+    { time: '11:00', level: 6, day: 'Tuesday' },
+    { time: '12:00', level: 5, day: 'Wednesday' },
+    { time: '13:00', level: 4, day: 'Thursday' },
+    { time: '14:00', level: 3, day: 'Friday' },
+    { time: '15:00', level: 2, day: 'Saturday' },
+    { time: '16:00', level: 1, day: 'Sunday' }
 ];
-
-function renderUVLevels(data) {
+function filterDataByDay(data, day) {
+    return data.filter(entry => entry.day === day);
+}
+function renderUVLevels(data, selectedDay) {
     const uvLevelsContainer = document.getElementById('uv-levels');
     uvLevelsContainer.innerHTML = ''; // Limpiar contenido previo
 
-    data.forEach(entry => {
+    const filteredData = filterDataByDay(data, selectedDay);
+
+    filteredData.forEach(entry => {
         const levelDiv = document.createElement('div');
         levelDiv.classList.add('uv-level');
 
