@@ -23,8 +23,18 @@
           con la energía solar para ofrecerte predicciones precisas de la radiación solar. Nuestro avanzado sistema de
           IA analiza datos en tiempo real para proporcionar información detallada y exacta sobre los niveles de
           radiación solar.</p>
-  
-
+          <!-- <table border="1">
+            <tbody>
+                <% registros.forEach(function(registro) { %>
+                    <tr>
+                        <td><%= registro.hora %></td>
+                        <td><%= registro.uv_intensity %></td>
+                        <td><%= registro.dia_semana %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+   -->
       </div>
       <div class="graphic">
         <img class="graphic-sun" src="img/sol.png">
@@ -34,23 +44,33 @@
   <section class="weather">
     <div class="forecast">
         <div class="day">
+          <% registros.forEach(function(registro) { 
+            var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
+            var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
+            %>
           <div class="countdown flex">
             <div class="uv-container">
               <div class="uv-header">
-                  <span>🌞 6:29</span>
-                  <span>🌜 17:55</span>
+                  <span><%= registro.fecha %></span>
+                  <span><%= registro.dia_semana %></span>
               </div>
-              <div id="uv-levels">
-                  <!-- Los niveles se agregarán aquí dinámicamente -->
-              </div>
+              <div id="uv-levels"><hr>
+                <!-- Los niveles se agregarán aquí dinámicamente -->
+                <div class="uv-level">
+                    <span><%= registro.hora %></span>
+                    <div class="bar <%= barClass %>" style="width: <%= barWidth %>%;"></div>
+                    <span class="bar-value"><%= registro.uv_intensity %></span>
+                </div>               
+            </div>
               <div class="uv-footer">
                   El índice ultravioleta previsto para hoy en Bayóvar es muy alto.
               </div>
             </div>
           </div>
+          <% }); %>
         </div>
     </div>
   </section>
   <script src="clock.js"></script>
-  <script src="grafico.js"></script>
+  <!-- <script src="grafico.js"></script> -->
 </body>
