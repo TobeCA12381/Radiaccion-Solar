@@ -7,6 +7,7 @@
   <link href="graphic.css" rel="stylesheet" type="text/css" />
   <link href="banner.css" rel="stylesheet" type="text/css" />
   <link href="pagina.css" rel="stylesheet" type="text/css" />
+  <link href="uv.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -22,70 +23,34 @@
           con la energía solar para ofrecerte predicciones precisas de la radiación solar. Nuestro avanzado sistema de
           IA analiza datos en tiempo real para proporcionar información detallada y exacta sobre los niveles de
           radiación solar.</p>
-        <div class="countdown flex">
-          <div class="flex">
-            <div class="countdown-item flex">
-              <span id="hours" class="countdown-Number">00</span>
-              <span class="countdown-Letter">H</span>
-            </div>
-            <div class="countdown-item flex">
-              <span id="minutes" class="countdown-Number">00</span>
-              <span class="countdown-Letter">M</span>
-            </div>
-            <div class="countdown-item flex">
-              <span id="seconds" class="countdown-Number">00</span>
-              <span class="countdown-Letter">S</span>
-            </div>
-          </div>
-        </div>
-        <div class="container-clock">
-          <p id="date">date</p>
-        </div>
+  
+
       </div>
       <div class="graphic">
         <img class="graphic-sun" src="img/sol.png">
       </div>
-    </div>
+    </div>    
   </section>
   <section class="weather">
     <div class="forecast">
         <div class="day">
-            <img src="sunny.png" alt="Sunny">
-            <p class="temperature">61°F</p>
-            <p class="day-name">MON</p>
-        </div>
-        <div class="day">
-            <img src="sunny.png" alt="Sunny">
-            <p class="temperature">64°F</p>
-            <p class="day-name">TUES</p>
-        </div>
-        <div class="day">
-            <img src="cloudy.png" alt="Cloudy">
-            <p class="temperature">71°F</p>
-            <p class="day-name">WED</p>
-        </div>
-        <div class="day">
-            <img src="rainy.png" alt="Rainy">
-            <p class="temperature">70°F</p>
-            <p class="day-name">THURS</p>
-        </div>
-        <div class="day">
-            <img src="stormy.png" alt="Stormy">
-            <p class="temperature">70°F</p>
-            <p class="day-name">FRI</p>
-        </div>
-        <div class="day">
-            <img src="sunny.png" alt="Sunny">
-            <p class="temperature">72°F</p>
-            <p class="day-name">SAT</p>
-        </div>
-        <div class="day">
-            <img src="cloudy.png" alt="Cloudy">
-            <p class="temperature">71°F</p>
-            <p class="day-name">SUN</p>
+          <div class="countdown flex">
+            <div class="uv-container">
+              <div class="uv-header">
+                  <span>🌞 6:29</span>
+                  <span>🌜 17:55</span>
+              </div>
+              <div id="uv-levels">
+                  <!-- Los niveles se agregarán aquí dinámicamente -->
+              </div>
+              <div class="uv-footer">
+                  El índice ultravioleta previsto para hoy en Bayóvar es muy alto.
+              </div>
+            </div>
+          </div>
         </div>
     </div>
   </section>
-
   <script src="clock.js"></script>
+  <script src="grafico.js"></script>
 </body>
