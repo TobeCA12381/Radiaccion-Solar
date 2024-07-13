@@ -9,7 +9,37 @@
   <link href="pagina.css" rel="stylesheet" type="text/css" />
   <link href="uv.css" rel="stylesheet" />
 </head>
+<style>
+  /* Estilos para los botones de filtro */
+  .filter-buttons {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
 
+  .filter-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .filter-button:hover {
+    background-color: #45a049;
+  }
+
+  .filter-button.active {
+    background-color: #3e8e41;
+  }
+</style>
 <body>
   <section class="main-banner">
     <div class="grid-container">
@@ -23,83 +53,121 @@
           con la energía solar para ofrecerte predicciones precisas de la radiación solar. Nuestro avanzado sistema de
           IA analiza datos en tiempo real para proporcionar información detallada y exacta sobre los niveles de
           radiación solar.</p>
-          <div class="countdown flex">
-            <div class="flex">
-              <div class="countdown-item flex">
-                <span id="hours" class="countdown-Number">00</span>
-                <span class="countdown-Letter">H</span>
-              </div>
-              <div class="countdown-item flex">
-                <span id="minutes" class="countdown-Number">00</span>
-                <span class="countdown-Letter">M</span>
-              </div>
-              <div class="countdown-item flex">
-                <span id="seconds" class="countdown-Number">00</span>
-                <span class="countdown-Letter">S</span>
-              </div>
+        <div class="countdown flex">
+          <div class="flex">
+            <div class="countdown-item flex">
+              <span id="hours" class="countdown-Number">00</span>
+              <span class="countdown-Letter">H</span>
+            </div>
+            <div class="countdown-item flex">
+              <span id="minutes" class="countdown-Number">00</span>
+              <span class="countdown-Letter">M</span>
+            </div>
+            <div class="countdown-item flex">
+              <span id="seconds" class="countdown-Number">00</span>
+              <span class="countdown-Letter">S</span>
             </div>
           </div>
-          <div class="container-clock">
-            <p id="date">date</p>
-          </div>
+        </div>
+        <div class="container-clock">
+          <p id="date">date</p>
+        </div>
       </div>
       <div class="graphic">
         <img class="graphic-sun" src="img/sol.png">
       </div>
-    </div>    
+    </div>
   </section>
+  
+  
+  
   <section class="weather">
     <div class="forecast">
-        <% 
-        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        daysOfWeek.forEach(day => {
-            const dayRecords = registros.filter(record => record.dia_semana === day);
-            if (dayRecords.length > 0) { 
-        %>
-        <div class="day">
-            <h2><%= day %></h2>
-            <% dayRecords.forEach(function(registro) { 
-                var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
-                var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
-              
-                var uvLevels = [
-                    { min: 1, max: 2, message: 'bajo' },
-                    { min: 3, max: 5, message: 'moderado' },
-                    { min: 6, max: 7, message: 'alto' },
-                    { min: 8, max: 10, message: 'muy alto' },
-                    { min: 11, max: Infinity, message: 'extremo' }
-                ];
-
-                
-                var uvMessage = uvLevels.find(level => registro.uv_intensity >= level.min && registro.uv_intensity <= level.max).message;
-
-            %>
-            <div class="countdown flex">
-                <div class="uv-container">
-                    <div class="uv-header">
-                        <span><%= registro.fecha %></span>
-                        <span><%= registro.dia_semana %></span>
-                    </div>
-                    <div id="uv-levels">
-                        <div class="uv-level">
-                            <span><%= registro.hora %></span>
-                            <div class="bar <%= barClass %>" style="width: <%= barWidth %>%;"></div>
-                            <span class="bar-value"><%= registro.uv_intensity %></span>
-                        </div>
-                    </div>
-                    <div class="uv-footer">
-                        El índice ultravioleta previsto para hoy en Bayóvar es <%= uvMessage %>.
-                    </div>
-                </div>
-            </div>
-            <% }); %>
+      <div class="filter">
+        <div class="filter-buttons">
+          <button class="filter-button" data-day="all">Todos</button>
+          <button class="filter-button" data-day="Monday">Lunes</button>
+          <button class="filter-button" data-day="Tuesday">Martes</button>
+          <button class="filter-button" data-day="Wednesday">Miércoles</button>
+          <button class="filter-button" data-day="Thursday">Jueves</button>
+          <button class="filter-button" data-day="Friday">Viernes</button>
+          <button class="filter-button" data-day="Saturday">Sábado</button>
+          <button class="filter-button" data-day="Sunday">Domingo</button>
         </div>
-        <% 
-            }
-        });
-        %>
+      </div>
+      <% 
+      const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      daysOfWeek.forEach(day => {
+          const dayRecords = registros.filter(record => record.dia_semana === day);
+          const groupedByDate = dayRecords.reduce((acc, record) => {
+              (acc[record.fecha] = acc[record.fecha] || []).push(record);
+              return acc;
+          }, {});
+          const dates = Object.keys(groupedByDate);
+          if (dates.length > 0) { 
+      %>
+      <div class="day" data-day="<%= day %>">
+        <h2><%= day %></h2>
+        <% dates.forEach(date => { %>
+        <div class="date-group">
+          <h3><%= date %></h3>
+          <% groupedByDate[date].forEach(function(registro) { 
+              var barWidth = registro.uv_intensity * 10; // Calcular el ancho de la barra
+              var barClass = 'level-' + registro.uv_intensity; // Asignar la clase según el nivel
+            
+              var uvLevels = [
+                  { min: 1, max: 2, message: 'bajo' },
+                  { min: 3, max: 5, message: 'moderado' },
+                  { min: 6, max: 7, message: 'alto' },
+                  { min: 8, max: 10, message: 'muy alto' },
+                  { min: 11, max: Infinity, message: 'extremo' }
+              ];
+
+              
+              var uvMessage = uvLevels.find(level => registro.uv_intensity >= level.min && registro.uv_intensity <= level.max).message;
+
+          %>
+          <div class="countdown flex">
+            <div class="uv-container">
+              <div class="uv-header">
+                <span><%= registro.hora %></span>
+              </div>
+              <div id="uv-levels">
+                <div class="uv-level">
+                  <span><%= registro.hora %></span>
+                  <div class="bar <%= barClass %>" style="width: <%= barWidth %>%;"></div>
+                  <span class="bar-value"><%= registro.uv_intensity %></span>
+                </div>
+              </div>
+              <div class="uv-footer">
+                El índice ultravioleta previsto para hoy en Bayóvar es <%= uvMessage %>.
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% }); %>
+      </div>
+      <% 
+          }
+      });
+      %>
     </div>
-</section>
+  </section>
+  
   <script src="clock.js"></script>
-  <!-- <script src="grafico.js"></script> -->
+  <script>
+    document.querySelectorAll('.filter-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const day = button.getAttribute('data-day');
+        document.querySelectorAll('.day').forEach(dayDiv => {
+          if (day === 'all' || dayDiv.getAttribute('data-day') === day) {
+            dayDiv.style.display = 'block';
+          } else {
+            dayDiv.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </body>

@@ -2,7 +2,7 @@
   background: #70e1f5;
   background: -webkit-linear-gradient(to right, #ffd194, #70e1f5);
   background: linear-gradient(to left, #ffd194, #70e1f5);
-  color: #fff;
+  color: #6e5a5a;
   padding: 1rem 1rem 5rem 5rem; /* Ajuste el padding según sea necesario */
 }
 
@@ -26,6 +26,7 @@
 }
 
 .description {
+  font-family: "Roboto", sans-serif;
   font-size: 0.8rem;
 }
 
